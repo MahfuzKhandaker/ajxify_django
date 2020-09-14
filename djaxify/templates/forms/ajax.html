@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% comment "template_location" %}
+    'forms/ajax.html'
+{% endcomment %}
+
+{% block content %}
+    <form class='my-ajax-form' method='POST' action='/join/' data-url='{{ request.build_absolute_uri|safe }}'>
+        {{form.as_p|safe}}
+        <button type='submit'>Submit</button>
+    </form>
+{% endblock content %}

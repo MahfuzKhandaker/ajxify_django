@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Base Template</title>
+  </head>
+  <body>
+    <div>
+    {% block content %}{% endblock content %}
+    </div>
+
+    <!-- jQuery (required for this Ajax tutorial) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+      function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+</script>
+<script>
+  $(document).ready(function(){
+      var $myForm = $('.my-ajax-form')
+      $myForm.submit(function(event){
+          event.preventDefault()
+          var $formData = $(this).serialize()
+          var $thisURL = $myForm.attr('data-url') || window.location.href // or set your own url
+          console.log($formData)
+          console.log($thisURL)
+          $.ajax({
+              method: "POST",
+              url: $thisURL,
+              data: $formData,
+              success: handleFormSuccess,
+              error: handleFormError,
+          })
+      });
+      
+      function handleFormSuccess(data, textStatus, jqXHR){
+          console.log(data)
+          console.log(textStatus)
+          console.log(jqXHR)
+          $myForm[0].reset(); // reset form data
+      }
+  
+      function handleFormError(jqXHR, textStatus, errorThrown){
+          console.log(jqXHR)
+          console.log(textStatus)
+          console.log(errorThrown)
+      };
+      $(document).on('click', '#like', function(event){
+          event.preventDefault();
+          var pk = $(this).attr('value');
+          $.ajax({
+              type: 'POST',
+              url: '{% url "likes" %}',
+              data: {
+                  'post_id': pk,
+                  'csrfmiddlewaretoken': '{{ csrf_token }}'
+              },
+              success: function(response){
+                  $('#like-section').html(response['form'])
+              },
+              error: function(rs, e){
+                  console.log(rs.responseText);
+              },
+          });
+        });
+  });
+  
+        
+  </script
+  </body>
+</html>

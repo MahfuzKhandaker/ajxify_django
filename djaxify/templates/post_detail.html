@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>All Posts</h1>
+{% if post %}
+<h3>{{post.title}}</h3>
+<small>
+    <span>Last Updated:{{post.last_modified|timesince}} ago |&nbsp; 
+      <!-- {{post.likes.count}} 
+      <form action="{% url 'likes' %}" method="POST">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+        <button type="submit" name="post_id" value="{{ post.id }}">Like</button>
+        {% else %}
+        <button type="submit" name="post_id" value="{{ post.id }}">Dislike</button>
+        {% endif %}
+      </form> -->
+    <div id="like-section">
+      {% include 'like_section.html' %}
+    </div>
+      
+
+      
+    </span>
+</small>
+
+
+<p><b>{{post.summary}}</b></p>
+<p>{{post.body}}</p>
+{% endif %}
+
+{% endblock content %}

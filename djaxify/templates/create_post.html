@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form class='create-post-ajax-form' method='POST' action='/blog/create/' data-url='{{ request.build_absolute_uri|safe }}'>
+        {{form.as_p|safe}}
+        <button type='submit'>Submit</button>
+    </form>
+{% endblock content %}
