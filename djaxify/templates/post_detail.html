@@ -6,22 +6,10 @@
 {% if post %}
 <h3>{{post.title}}</h3>
 <small>
-    <span>Last Updated:{{post.last_modified|timesince}} ago |&nbsp; 
-      <!-- {{post.likes.count}} 
-      <form action="{% url 'likes' %}" method="POST">
-        {% csrf_token %}
-        {% if user.is_authenticated %}
-        <button type="submit" name="post_id" value="{{ post.id }}">Like</button>
-        {% else %}
-        <button type="submit" name="post_id" value="{{ post.id }}">Dislike</button>
-        {% endif %}
-      </form> -->
-    <div id="like-section">
-      {% include 'like_section.html' %}
-    </div>
-      
-
-      
+    <span>Last Updated:{{post.last_modified|timesince}} ago |&nbsp;
+      <div id="like-section">
+        {% include 'like_section.html' %}
+      </div>
     </span>
 </small>
 
@@ -29,5 +17,18 @@
 <p><b>{{post.summary}}</b></p>
 <p>{{post.body}}</p>
 {% endif %}
+
+<br>
+<hr>
+<div class="comment-section">
+  {{comments.count}} Comment{{comments|pluralize}}
+  {% for comment in comments %}
+  <blockquote class="blockquote">
+    <p class="mb-0">{{comment.text}}</p>
+    <footer class="blockquote-footer"> - by <cite title="Source Title">{{comment.user|capfirst}}</cite></footer>
+  </blockquote>
+  {% endfor %}
+
+</div>
 
 {% endblock content %}

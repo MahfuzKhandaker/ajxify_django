@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, reverse
 from django.views.generic import FormView, CreateView, ListView, DetailView
 from django.http import JsonResponse
-from .forms import JoinForm, PostForm
-from .models import Post
+from .forms import JoinForm, PostForm, CommentForm
+from .models import Post, Comment
 from .mixins import AjaxFormMixin
 from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
@@ -34,6 +34,13 @@ class PostDetailView(DetailView):
     model = Post
     context_object_name = 'post'
     template_name = 'post_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(PostDetailView, self).get_context_data(*args, **kwargs)
+        post = get_object_or_404(Post, slug=self.kwargs['slug'])
+        context['comments'] = post.comments.all()
+        context['total_likes'] = post.likes.count()
+        return context 
 
 
 def likes(request):

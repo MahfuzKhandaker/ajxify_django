@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post, Comment
 
 
 class JoinForm(forms.Form):
@@ -11,3 +11,9 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'slug', 'summary', 'body', 'likes',]
+
+
+class CommentForm(forms.ModelForm):
+    class meta:
+        model = Comment
+        fields = ['text',]

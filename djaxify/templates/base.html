@@ -14,66 +14,66 @@
     <!-- jQuery (required for this Ajax tutorial) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>
-      function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
+//       function getCookie(name) {
+//     var cookieValue = null;
+//     if (document.cookie && document.cookie !== '') {
+//         var cookies = document.cookie.split(';');
+//         for (var i = 0; i < cookies.length; i++) {
+//             var cookie = jQuery.trim(cookies[i]);
+//             // Does this cookie string begin with the name we want?
+//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
+//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+//                 break;
+//             }
+//         }
+//     }
+//     return cookieValue;
+// }
 
-var csrftoken = getCookie('csrftoken');
+// var csrftoken = getCookie('csrftoken');
 
-function csrfSafeMethod(method) {
-    // these HTTP methods do not require CSRF protection
-    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    }
-});
+// function csrfSafeMethod(method) {
+//     // these HTTP methods do not require CSRF protection
+//     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+// }
+// $.ajaxSetup({
+//     beforeSend: function(xhr, settings) {
+//         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+//             xhr.setRequestHeader("X-CSRFToken", csrftoken);
+//         }
+//     }
+// });
 </script>
 <script>
   $(document).ready(function(){
-      var $myForm = $('.my-ajax-form')
-      $myForm.submit(function(event){
-          event.preventDefault()
-          var $formData = $(this).serialize()
-          var $thisURL = $myForm.attr('data-url') || window.location.href // or set your own url
-          console.log($formData)
-          console.log($thisURL)
-          $.ajax({
-              method: "POST",
-              url: $thisURL,
-              data: $formData,
-              success: handleFormSuccess,
-              error: handleFormError,
-          })
-      });
+    //   var $myForm = $('.my-ajax-form')
+    //   $myForm.submit(function(event){
+    //       event.preventDefault()
+    //       var $formData = $(this).serialize()
+    //       var $thisURL = $myForm.attr('data-url') || window.location.href // or set your own url
+    //       console.log($formData)
+    //       console.log($thisURL)
+    //       $.ajax({
+    //           method: "POST",
+    //           url: $thisURL,
+    //           data: $formData,
+    //           success: handleFormSuccess,
+    //           error: handleFormError,
+    //       })
+    //   });
       
-      function handleFormSuccess(data, textStatus, jqXHR){
-          console.log(data)
-          console.log(textStatus)
-          console.log(jqXHR)
-          $myForm[0].reset(); // reset form data
-      }
+    //   function handleFormSuccess(data, textStatus, jqXHR){
+    //       console.log(data)
+    //       console.log(textStatus)
+    //       console.log(jqXHR)
+    //       $myForm[0].reset(); // reset form data
+    //   }
   
-      function handleFormError(jqXHR, textStatus, errorThrown){
-          console.log(jqXHR)
-          console.log(textStatus)
-          console.log(errorThrown)
-      };
+    //   function handleFormError(jqXHR, textStatus, errorThrown){
+    //       console.log(jqXHR)
+    //       console.log(textStatus)
+    //       console.log(errorThrown)
+    //   };
       $(document).on('click', '#like', function(event){
           event.preventDefault();
           var pk = $(this).attr('value');
