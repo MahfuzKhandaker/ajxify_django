@@ -2,10 +2,30 @@
 
 {% block content %}
 
-<h1>All Posts</h1>
+<div class="container">
+    <h1>All Posts</h1>
+    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Totam perferendis cupiditate veniam, facere ipsam praesentium. Maxime explicabo, magnam nobis temporibus repudiandae enim! Praesentium maiores, accusantium hic at soluta commodi quae.</p>
+    <br>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa excepturi inventore sed nobis? Enim exercitationem libero magni, perspiciatis deserunt porro illo nisi dolore cum? Itaque earum corrupti architecto at iure.</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam modi unde excepturi voluptatem velit a accusantium accusamus, tempore officia nam. In ipsa quam laudantium voluptate quod possimus reiciendis, voluptas officiis.</p>
+</div>
+
 {% for post in posts %}
-<h3><a href="{{ post.get_absolute_url }}">{{post.title}}</a></h3>
-<p>{{post.summary}}</p>
+<div class="container cf">
+
+    <div class="card blogcard bounce-up cf" style="width: 18rem;">
+        <img class="card-img-top" src="..." alt="Card image cap">
+        <div class="card-body cf">
+          <h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{post.title}}</a></h5>
+          <p class="card-text">{{post.summary}}</p>
+          <a href="{{ post.get_absolute_url }}" class="btn btn-primary">READ MORE</a>
+        </div>
+      </div>
+
+</div>
+
+
 {% endfor %}
 
 {% endblock content %}
+

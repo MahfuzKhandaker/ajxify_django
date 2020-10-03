@@ -5,6 +5,84 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Base Template</title>
+    <style>
+      *,
+*:before,
+*:after {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+/*clearfixes*/
+
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table;
+}
+
+.cf:after {
+  clear: both;
+}
+.container {
+  position: relative;
+  padding: 25px;
+}
+
+.container:last-of-type {
+  padding-top: 0px;
+}
+/*animation element*/
+
+.blogcard {
+  position: relative;
+  width: 100%;
+  margin: 0% 1.33 2.66% 1.33%;
+  /* float: left; */
+}
+/*3 grid layout*/
+/* 
+.blogcard:nth-of-type(3n-2) {
+  width: 31.5%;
+  margin: 0% 1.375% 2.75% 0%;
+  clear: left;
+}
+
+.blogcard:nth-of-type(3n-1) {
+  width: 31.5%;
+  margin: 0% 1.375% 2.75% 1.375%;
+}
+
+.blogcard:nth-of-type(3n-0) {
+  width: 31.5%;
+  margin: 0% 0% 2.75% 1.375%;
+  clear: right;
+} */
+      .bounce-up {
+        opacity: 0;
+  -moz-transition: all 400ms ease-out;
+  -webkit-transition: all 400ms ease-out;
+  -o-transition: all 400ms ease-out;
+  transition: all 400ms ease-out;
+  -moz-transform: translate3d(0px, 100px, 0px);
+  -webkit-transform: translate3d(0px, 100px, 0px);
+  -o-transform: translate(0px, 100px);
+  -ms-transform: translate(0px, 100px);
+  transform: translate3d(0px, 100, 0px);
+  -webkit-backface-visibility: hidden;
+  -moz-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.bounce-up.animate {
+  opacity: 1;
+  -moz-transform: translate3d(0px, 0px, 0px);
+  -webkit-transform: translate3d(0px, 0px, 0px);
+  -o-transform: translate(0px, 0px);
+  -ms-transform: translate(0px, 0px);
+  transform: translate3d(0px, 0px, 0px);
+}
+    </style>
   </head>
   <body>
     <div>
@@ -95,6 +173,24 @@
   });
   
         
-  </script
+</script>
+  <script>
+    $.fn.isInViewport = function () {
+    let elementTop = $(this).offset().top;
+    let elementBottom = elementTop + $(this).outerHeight();
+    let viewportTop = $(window).scrollTop();
+    let viewportBottom = viewportTop + $(window).height();
+    return elementBottom > viewportTop && elementTop < viewportBottom;
+};
+    $(window).on("load resize scroll", function () {
+    $('.blogcard').each(function() {
+        if( $(this).isInViewport() ) {
+            $(this).addClass('animate');
+        } else {
+          $(this).removeClass('animate');
+        }
+    });
+});
+  </script>
   </body>
 </html>
