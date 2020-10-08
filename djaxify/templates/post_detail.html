@@ -21,6 +21,8 @@
 <br>
 <hr>
 <div class="comment-section">
+  <a href="{% url 'add-comment' post.slug %}">Add Comment</a>
+  <br>
   {{comments.count}} Comment{{comments|pluralize}}
   {% for comment in comments %}
   <blockquote class="blockquote">
@@ -28,7 +30,6 @@
     <footer class="blockquote-footer"> - by <cite title="Source Title">{{comment.user|capfirst}}</cite></footer>
   </blockquote>
   {% endfor %}
-
 </div>
 
 {% endblock content %}
