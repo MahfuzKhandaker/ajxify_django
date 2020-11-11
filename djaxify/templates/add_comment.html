@@ -1,8 +1,0 @@
-{% extends "base.html" %}
-
-{% block content %}
-    <form class='add-comment-post-ajax-form' method='POST'> {% csrf_token %} 
-        {{form.as_p}}
-        <button type='submit'>Add Comment</button>
-    </form>
-{% endblock content %}

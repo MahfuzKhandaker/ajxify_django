@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid mt-2">
+        <form method="POST" class="comment-form" action="." > {% csrf_token %}
+            {{comment_form.as_p}}
+            
+            {% if request.user.is_authenticated %}
+            <input type="submit" value="Post a Comment" class="btn btn-outline-success">
+            {% else %}
+            <input type="submit" value="Post a Comment" class="btn btn-outline-success" disabled>
+            {% endif %}
+        </form>
+
+    {{ total_comments }} Comment{{ total_comments|pluralize }}
+
+    {% for comment in comments %}
+
+    <blockquote class="blockquote">
+        <p class="mb-0"><small>{{comment.content}}</small></p>
+        <footer class="blockquote-footer"> - by <cite title="Source Title">{{comment.user|capfirst}}</cite>
+            <button type="button" name="button" class="reply-btn btn btn-outline-dark btn-sm ml-2">Reply</button>
+        </footer>
+        <div class="comment-reply container mt-2">
+            {% for child_comment in comment.children %}
+            <blockquote class="blockquote">
+                <p class="mb-0"><small>{{child_comment.content}}</small></p>
+                <footer class="blockquote-footer"> - by <cite title="Source Title"><small>{{child_comment.user|capfirst}}</small></cite>
+                    
+                </footer>
+            </blockquote>
+            {% endfor %}
+            <form class="reply-form" method="POST" action=".">
+                {% csrf_token %}
+                
+                {{comment_form.as_p}}
+                <input type="hidden" name="parent_id" value="{{comment.id}}">
+
+                
+                
+                {% if request.user.is_authenticated %}
+                <input type="submit" value="Reply" class="btn btn-outline-success">
+                {% else %}
+                <input type="submit" value="Reply" class="btn btn-outline-success" disabled>
+                {% endif %}
+            </form>
+        </div>
+
+
+    </blockquote>
+
+    <div class="comment-reply container mt-2" style="display: none;">
+        {% for child_comment in comment.children %}
+        <blockquote class="blockquote">
+            <p class="mb-0"><small>{{child_comment.content}}</small></p>
+            <footer class="blockquote-footer"> - by <cite title="Source Title"><small>{{child_comment.user|capfirst}}</small></cite>
+                
+            </footer>
+        </blockquote>
+        {% endfor %}
+
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

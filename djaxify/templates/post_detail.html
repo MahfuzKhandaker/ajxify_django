@@ -5,8 +5,9 @@
 <h1>All Posts</h1>
 {% if post %}
 <h3>{{post.title}}</h3>
+
 <small>
-    <span>Last Updated:{{post.last_modified|timesince}} ago |&nbsp;
+    <span>Published on:{{post.timestamp|timesince}} ago |&nbsp;
       <div id="like-section">
         {% include 'like_section.html' %}
       </div>
@@ -14,22 +15,45 @@
 </small>
 
 
-<p><b>{{post.summary}}</b></p>
-<p>{{post.body}}</p>
-{% endif %}
+<p><b>{{post.overview}}</b></p>
+<p>{{post.content}}</p>
+
 
 <br>
 <hr>
-<div class="comment-section">
-  <a href="{% url 'add-comment' post.slug %}">Add Comment</a>
-  <br>
-  {{comments.count}} Comment{{comments|pluralize}}
-  {% for comment in comments %}
-  <blockquote class="blockquote">
-    <p class="mb-0">{{comment.text}}</p>
-    <footer class="blockquote-footer"> - by <cite title="Source Title">{{comment.user|capfirst}}</cite></footer>
+<!-- Comment & Reply -->
+{% comment %}
+
+<p class="lead">Comment</p>
+<form action="." method="post"> {% csrf_token %}
+  {{comment_form.as_p}}
+  <input type="submit" value="Post comment" class="btn btn-default">
+</form>
+<hr>
+{% for comment in post.comments.all %}
+<blockquote>
+  <p>{{comment.content}}</p>
+  <footer>Via {{comment.user}} | {{comment.timestamp|timesince}} ago</footer>
+  {% for child_comment in comment.children %}
+  <blockquote>
+    <p>{{child_comment.content}}</p>
+    <footer>Via {{child_comment.user}} | {{child_comment.timestamp|timesince}} ago</footer>
   </blockquote>
   {% endfor %}
+  <form action="." method="post"> {% csrf_token %}
+    {{comment_form.as_p}}
+    <input type="hidden" name="parent_id" value="{{comment.id}}">
+    <input type="submit" value="Reply" class="btn btn-default">
+  </form>
+</blockquote>
+{% endfor %}
+
+{% endcomment %}
+
+<div id="comment-section">
+  {% include 'comment_section.html' %}
 </div>
 
+
+{% endif %}
 {% endblock content %}

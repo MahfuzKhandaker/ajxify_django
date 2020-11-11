@@ -14,17 +14,15 @@
 <div class="container cf">
 
     <div class="card blogcard bounce-up cf" style="width: 18rem;">
-        <img class="card-img-top" src="..." alt="Card image cap">
+        <img class="card-img-top" src="{{ post.thumbnail.url }}" alt="Card image cap">
         <div class="card-body cf">
           <h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{post.title}}</a></h5>
-          <p class="card-text">{{post.summary}}</p>
+          <p class="card-text">{{post.overview}}</p>
           <a href="{{ post.get_absolute_url }}" class="btn btn-primary">READ MORE</a>
         </div>
       </div>
 
 </div>
-
-
 {% endfor %}
 
 {% endblock content %}
