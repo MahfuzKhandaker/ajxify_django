@@ -199,7 +199,7 @@
           $('#comment-section').html(response['form']);
           $('textarea').val('');
           $('.reply-btn').click(function() {
-            $(this).parent().parent().next('.comment-post').fadeToggle();
+            $(this).parent().parent().next('.comment-reply').fadeToggle();
             $('textarea').val('');
           });
         },
@@ -221,7 +221,7 @@
           $('#comment-section').html(response['form']);
           $('textarea').val('');
           $('.reply-btn').click(function() {
-            $(this).parent().parent().next('.comment-reply').fadeToggle();
+            $(this).parent().parent().next('.replied-comments').fadeToggle();
             $('textarea').val('');
           });
         },

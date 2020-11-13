@@ -59,7 +59,7 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
-    parent = models.ForeignKey('self',  null=True, blank=True, on_delete=models.CASCADE, related_name='replies')
+    parent = models.ForeignKey('self',  null=True, blank=True, on_delete=models.CASCADE)
     post = models.ForeignKey(
         'Post', related_name='comments', on_delete=models.CASCADE)
 

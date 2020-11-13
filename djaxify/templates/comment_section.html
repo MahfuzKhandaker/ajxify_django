@@ -49,6 +49,7 @@
 
 
     </blockquote>
+    {% endfor %}
 
     <div class="comment-reply container mt-2" style="display: none;">
         {% for child_comment in comment.children %}
@@ -59,8 +60,6 @@
             </footer>
         </blockquote>
         {% endfor %}
-
-    {% endfor %}
     </div>
 </div>
 

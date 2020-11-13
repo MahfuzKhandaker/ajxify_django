@@ -22,7 +22,7 @@
 <br>
 <hr>
 <!-- Comment & Reply -->
-{% comment %}
+
 
 <p class="lead">Comment</p>
 <form action="." method="post"> {% csrf_token %}
@@ -30,7 +30,7 @@
   <input type="submit" value="Post comment" class="btn btn-default">
 </form>
 <hr>
-{% for comment in post.comments.all %}
+{% for comment in comments %}
 <blockquote>
   <p>{{comment.content}}</p>
   <footer>Via {{comment.user}} | {{comment.timestamp|timesince}} ago</footer>
@@ -48,12 +48,12 @@
 </blockquote>
 {% endfor %}
 
-{% endcomment %}
 
+{% comment %}
 <div id="comment-section">
   {% include 'comment_section.html' %}
 </div>
-
+{% endcomment %}
 
 {% endif %}
 {% endblock content %}
