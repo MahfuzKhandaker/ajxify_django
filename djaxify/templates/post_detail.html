@@ -21,6 +21,18 @@
 
 <br>
 <hr>
+
+<div id="favourite-section">
+  {% if is_favourite %}
+  <a href="{% url 'favourite_post' slug=post.slug %}">
+    <i class="fa fa-heart" style="color:red"></i>
+  </a>
+  {% else %}
+  <a href="{% url 'favourite_post' slug=post.slug %}">
+    <i class="fa fa-heart" style="color: black;"></i>
+  </a>
+  {% endif %}
+</div>
 <!-- Comment & Reply -->
 
 <div class="main-comment-section">
