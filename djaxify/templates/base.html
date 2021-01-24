@@ -83,6 +83,7 @@
   transform: translate3d(0px, 0px, 0px);
 }
     </style>
+    <script src="https://use.fontawesome.com/d6a626efdd.js"></script>
   </head>
   <body>
     <div>
@@ -91,147 +92,86 @@
 
     <!-- jQuery (required for this Ajax tutorial) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script>
-//       function getCookie(name) {
-//     var cookieValue = null;
-//     if (document.cookie && document.cookie !== '') {
-//         var cookies = document.cookie.split(';');
-//         for (var i = 0; i < cookies.length; i++) {
-//             var cookie = jQuery.trim(cookies[i]);
-//             // Does this cookie string begin with the name we want?
-//             if (cookie.substring(0, name.length + 1) === (name + '=')) {
-//                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-//                 break;
-//             }
-//         }
-//     }
-//     return cookieValue;
-// }
-
-// var csrftoken = getCookie('csrftoken');
-
-// function csrfSafeMethod(method) {
-//     // these HTTP methods do not require CSRF protection
-//     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-// }
-// $.ajaxSetup({
-//     beforeSend: function(xhr, settings) {
-//         if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-//             xhr.setRequestHeader("X-CSRFToken", csrftoken);
-//         }
-//     }
-// });
-</script>
+  
 <script>
   $(document).ready(function(){
-    //   var $myForm = $('.my-ajax-form')
-    //   $myForm.submit(function(event){
-    //       event.preventDefault()
-    //       var $formData = $(this).serialize()
-    //       var $thisURL = $myForm.attr('data-url') || window.location.href // or set your own url
-    //       console.log($formData)
-    //       console.log($thisURL)
-    //       $.ajax({
-    //           method: "POST",
-    //           url: $thisURL,
-    //           data: $formData,
-    //           success: handleFormSuccess,
-    //           error: handleFormError,
-    //       })
-    //   });
-      
-    //   function handleFormSuccess(data, textStatus, jqXHR){
-    //       console.log(data)
-    //       console.log(textStatus)
-    //       console.log(jqXHR)
-    //       $myForm[0].reset(); // reset form data
-    //   }
-  
-    //   function handleFormError(jqXHR, textStatus, errorThrown){
-    //       console.log(jqXHR)
-    //       console.log(textStatus)
-    //       console.log(errorThrown)
-    //   };
+    $('#delete').click(function(){
+          return confirm("Are you sure to delete this post?");
+        });
 
-    // comment section
-    // $('.reply-btn').click(function() {
-    //   $(this).parent().parent().next('.comment-reply').fadeToggle();
-    //   $('textarea').val('');
-    // });
+        $('.reply-btn').click(function() {
+          $(this).parent().parent().next('.replied-comments').fadeToggle()
+        });
 
-    $(function(){
-      setTimeout(function(){
-        $('.alert').slideUp(2000);
-      }, 5000);
-    });
 
-    //like section 
-    $(document).on('click', '#like', function(event){
-      event.preventDefault();
-      var pk = $(this).attr('value');
-      $.ajax({
-          type: 'POST',
-          url: '{% url "likes" %}',
-          data: {
-              'post_id': pk,
-              'csrfmiddlewaretoken': '{{ csrf_token }}'
-          },
-          dataType: 'json',
-          success: function(response){
+        $(function(){
+          setTimeout(function(){
+            $('.alert').slideUp(2000);
+          }, 5000);
+        });
+
+        $(document).on('click', '#like', function(event){
+          event.preventDefault();
+          var pk = $(this).attr('value');
+          $.ajax({
+            type: 'POST',
+            url: '{% url "likes" %}',
+            data: {'post_id':pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+            dataType: 'json',
+            success: function(response){
               $('#like-section').html(response['form'])
               console.log($('#like-section').html(response['form']));
-          },
-          error: function(rs, e){
+            },
+            error: function(rs, e){
               console.log(rs.responseText);
-          },
-      });
-    });
-
-    $(document).on('submit', '.comment-form', function(event){
-      event.preventDefault();
-      console.log($(this).serialize());
-      $.ajax({
-        type: 'POST',
-        url: $(this).attr('action'),
-        data:$(this).serialize(),
-        dataType: 'json',
-        success: function(response) {
-          $('#comment-section').html(response['form']);
-          $('textarea').val('');
-          $('.reply-btn').click(function() {
-            $(this).parent().parent().next('.comment-reply').fadeToggle();
-            $('textarea').val('');
+            },
           });
-        },
-        error: function(rs, e) {
-          console.log(rs.responseText);
-        }
-      });
-    });
+        });
 
-    $(document).on('submit', '.reply-form', function(event){
-      event.preventDefault();
-      console.log($(this).serialize());
-      $.ajax({
-        type: 'POST',
-        url: $(this).attr('action'),
-        data:$(this).serialize(),
-        dataType: 'json',
-        success: function(response) {
-          $('#comment-section').html(response['form']);
-          $('textarea').val('');
-          $('.reply-btn').click(function() {
-            $(this).parent().parent().next('.replied-comments').fadeToggle();
-            $('textarea').val('');
+        $(document).on('submit', '.comment-form', function(event){
+          event.preventDefault();
+          console.log($(this).serialize());
+          $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(response) {
+              $('.main-comment-section').html(response['form']);
+              $('textarea').val('');
+              $('.reply-btn').click(function() {
+                $(this).parent().parent().next('.replied-comments').fadeToggle();
+                $('textarea').val('');
+              });
+            },
+            error: function(rs, e) {
+              console.log(rs.responseText);
+            },
           });
-        },
-        error: function(rs, e) {
-          console.log(rs.responseText);
-        }
-      });
-    });
+        });
 
 
+        $(document).on('submit', '.reply-form', function(event){
+          event.preventDefault();
+          console.log($(this).serialize());
+          $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(response) {
+              $('.main-comment-section').html(response['form']);
+              $('textarea').val('');
+              $('.reply-btn').click(function() {
+                $(this).parent().parent().next('.replied-comments').fadeToggle();
+                $('textarea').val('');
+              });
+            },
+            error: function(rs, e) {
+              console.log(rs.responseText);
+            },
+          });
+        });
 
     // blogcard move up animation onScroll in view
     $.fn.isInViewport = function () {

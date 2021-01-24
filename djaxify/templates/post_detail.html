@@ -23,37 +23,9 @@
 <hr>
 <!-- Comment & Reply -->
 
-
-<p class="lead">Comment</p>
-<form action="." method="post"> {% csrf_token %}
-  {{comment_form.as_p}}
-  <input type="submit" value="Post comment" class="btn btn-default">
-</form>
-<hr>
-{% for comment in comments %}
-<blockquote>
-  <p>{{comment.content}}</p>
-  <footer>Via {{comment.user}} | {{comment.timestamp|timesince}} ago</footer>
-  {% for child_comment in comment.children %}
-  <blockquote>
-    <p>{{child_comment.content}}</p>
-    <footer>Via {{child_comment.user}} | {{child_comment.timestamp|timesince}} ago</footer>
-  </blockquote>
-  {% endfor %}
-  <form action="." method="post"> {% csrf_token %}
-    {{comment_form.as_p}}
-    <input type="hidden" name="parent_id" value="{{comment.id}}">
-    <input type="submit" value="Reply" class="btn btn-default">
-  </form>
-</blockquote>
-{% endfor %}
-
-
-{% comment %}
-<div id="comment-section">
+<div class="main-comment-section">
   {% include 'comment_section.html' %}
 </div>
-{% endcomment %}
 
 {% endif %}
 {% endblock content %}

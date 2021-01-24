@@ -49,33 +49,18 @@ class Post(models.Model):
         return reverse('post-detail', kwargs={'slug': self.slug})
 
 
-class CommentManager(models.Manager):
-    def all(self):
-        qs = super(CommentManager, self).filter(parent=None)
-        return qs
-
-
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
-    content = models.TextField()
-    parent = models.ForeignKey('self',  null=True, blank=True, on_delete=models.CASCADE)
+    content = models.TextField(max_length=1000)
+    reply = models.ForeignKey('Comment', on_delete=models.CASCADE, related_name='replies', null=True, blank=True, default=None)
     post = models.ForeignKey(
         'Post', related_name='comments', on_delete=models.CASCADE)
 
-    objects = CommentManager()
+    objects = models.Manager()
 
     class Meta: 
         ordering = ['-timestamp']
 
     def __str__(self):
-        return self.user.username
-
-    def children(self): #replies
-        return Comment.objects.filter(parent=self)
-
-    @property
-    def is_parent(self):
-        if self.parent is not None:
-            return False
-        return True
+        return '{}-{}'.format(self.post.title, str(self.user.username))

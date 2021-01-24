@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.urls import reverse_lazy
+from django.core import serializers
 try:
     from django.utils import simplejson as json
 except ImportError:
@@ -35,59 +36,41 @@ class PostListView(ListView):
 
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
-    # comments = Comment.objects.filter(post=post, parent=None).order_by('-id')
+    comments = post.comments.filter(reply=None).order_by('-id')
     
-    if request.method=='POST':
-        comment_form = CommentForm(request.POST or None)
-        if comment_form.is_valid():
-            if not request.user.is_authenticated:
-                return redirect('login')
-
-            content_data = comment_form.cleaned_data['content']
-            parent_obj = None
-            try:
-                parent_id = int(request.POST.get('parent_id'))
-            except:
-                parent_id = None
-
-            if parent_id:
-                parent_qs = Comment.objects.filter(id=parent_id)
-                if parent_qs.exists():
-                    parent_obj = parent_qs.first()
-
-            new_comment, created = Comment.objects.get_or_create(
-                post=post, 
-                user=request.user,
-                content=content_data,
-                parent=parent_obj
-            )
-            return HttpResponseRedirect(new_comment.post.get_absolute_url())
-    else:
-        comment_form = CommentForm()
-    
-        
-    
-
     is_liked = False
     if post.likes.filter(id=request.user.id).exists():
         is_liked = True
 
 
+    if request.method=='POST':
+        querydict = request.POST
+        comment_form = CommentForm(querydict)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.post = post
+            comment.user = request.user
+            comment.reply_id = querydict.get('reply_id')
+            comment.save()
+    else:
+        comment_form = CommentForm()
+    
     context = {
         'post': post,
         'is_liked': is_liked,
-        'comments': post.comments.all(),
+        'comments': comments,
         'total_likes': post.likes.count(),
         'total_comments': post.comments.count(),
         'comment_form': comment_form,
     }
-    # if request.is_ajax():
-    #     html = render_to_string('comment_section.html', context, request=request)
-    #     return JsonResponse({'form': html})
+    if request.is_ajax():
+        html = render_to_string('comment_section.html', context, request=request)
+        comments = serializers.serialize('json', list(comments), fields=('content', 'reply', 'post', 'user__username'))
+        return JsonResponse({'form': html, 'comments': comments})
 
     return render(request, 'post_detail.html', context)
 
-
+        
 def likes(request):
     post = get_object_or_404(Post, id=request.POST.get('post_id'))
     is_liked = False

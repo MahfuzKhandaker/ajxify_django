@@ -8,6 +8,7 @@ urlpatterns = [
     path('', PostListView.as_view(), name='post-list'),
     path('likes/', likes, name='likes'),
     path('<slug:slug>/', post_detail, name='post-detail'),
+    # path('add_comment/', add_comment, name='add_comment'),
     path('create/', PostCreateView.as_view(), name='create-post'),
 ]
 
