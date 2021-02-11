@@ -91,7 +91,7 @@ def favourite_post(request, slug):
     return HttpResponseRedirect(post.get_absolute_url())
 
 def likes(request):
-    post = get_object_or_404(Post, id=request.POST.get('post_id'))
+    post = get_object_or_404(Post, slug=request.POST.get('post_slug'))
     is_liked = False
     if post.likes.filter(id=request.user.id).exists():
         post.likes.remove(request.user)
