@@ -44,7 +44,7 @@ class Post(models.Model):
     updated     = models.DateTimeField(auto_now=True)
     content     = models.TextField()
     author      = models.ForeignKey(Author, on_delete=models.CASCADE)
-    thumbnail   = models.ImageField()
+    thumbnail   = models.ImageField(upload_to='images/', blank=True)
     categories  = models.ManyToManyField(Category)
     featured    = models.BooleanField()
     status      = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')

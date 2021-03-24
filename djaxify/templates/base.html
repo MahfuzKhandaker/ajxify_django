@@ -38,6 +38,8 @@
   position: relative;
   width: 100%;
   margin: 0% 1.33 2.66% 1.33%;
+  background: rgb(230, 227, 227);
+  color: black;
   /* float: left; */
 }
 /*3 grid layout*/
@@ -92,6 +94,7 @@
 
     <!-- jQuery (required for this Ajax tutorial) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
   
 <script>
   $(document).ready(function(){
@@ -172,7 +175,6 @@
             },
           });
         });
-
     // blogcard move up animation onScroll in view
     $.fn.isInViewport = function () {
     let elementTop = $(this).offset().top;
@@ -194,5 +196,8 @@
   
         
 </script>
+
+{% block js %}
+{% endblock js %}
   </body>
 </html>

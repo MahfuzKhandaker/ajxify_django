@@ -10,6 +10,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.core import serializers
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 try:
     from django.utils import simplejson as json
 except ImportError:
@@ -27,11 +28,32 @@ class PostCreateView(AjaxFormMixin, CreateView):
     template_name = 'create_post.html'
 
 
+def post_list(request):
+    post_list = Post.published.all()
 
-class PostListView(ListView):
-    model = Post
-    context_object_name = 'posts'
-    template_name = 'post_list.html'  
+    #number of items on each page
+    number_of_item = 2
+    # Paginator
+    obj_paginator = Paginator(post_list, number_of_item)
+    #query_set for first page
+    first_page = obj_paginator.page(1).object_list
+    #range of page ex range(1, 3)
+    page_range = obj_paginator.page_range
+
+    context = {
+        # 'posts': post_list,
+        'obj_paginator':obj_paginator,
+        'first_page':first_page,
+        'page_range':page_range
+    }
+    #
+    if request.method == 'POST':
+        page_n = request.POST.get('page_n', None) #getting page number
+        results = list(obj_paginator.page(page_n).object_list.values())
+        print(results)
+        return JsonResponse({'results':results})
+
+    return render(request, 'post_list.html', context )
 
 
 def post_detail(request, slug):
