@@ -10,72 +10,62 @@
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam modi unde excepturi voluptatem velit a accusantium accusamus, tempore officia nam. In ipsa quam laudantium voluptate quod possimus reiciendis, voluptas officiis.</p>
 </div>
 
-
 <div id="posts">
-{% for i in first_page %}
-<div class="container cf">
-    <div class="card blogcard bounce-up cf" style="width: 18rem;">
-        <img class="card-img-top" src="{{ i.thumbnail.url }}" alt="Card image cap">
-        <div class="card-body cf">
-          <h5 class="card-title"><a href="{{ i.get_absolute_url }}">{{post.title}}</a></h5>
-          <p class="card-text">{{i.overview}}</p>
-          <a href="{{ i.get_absolute_url }}" class="btn btn-primary">READ MORE</a>
-        </div>
-      </div>
-</div>
-{% endfor %}
-</div>
+	{% for post in page_obj %}
+	<div class="container">
+		<div class="card" style="width: 18rem;">
+			<img class="card-img-top" src="{{ post.thumbnail.url }}" alt="Card image cap">
+			<div class="card-body cf">
+			  <h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{post.title}}</a></h5>
+			  <p class="card-text">{{post.content}}</p>
+			  <a href="{{ post.get_absolute_url }}" class="btn btn-primary">READ MORE</a>
+			</div>
+		  </div>
+	</div>
+	{% endfor %}
+	</div>
 
 <!-- loop pagination -->
-<div class="pagination">
-	{% for i in page_range %}
-	<a style="margin-left: 10px;" href="{{i}}">{{i}}</a>
-	{% endfor %}
+<div class="container">
+	{% include 'pagination.html' %}
 </div>
+
 
 {% endblock content %}
 
 {% block js %}
 
 
-<script>
-	$('.pagination a').click(function(event){
-		// preventing default actions
-		event.preventDefault();
-		var page_n = $(this).attr('href');
-		console.log(page_n)
-		// ajax call
-			$.ajax({
-					type: "POST",
-					// define url name
-					url: "{% url 'post-list' %}", 
-					data : {    
-					page_n : page_n, 
-					csrfmiddlewaretoken: '{{ csrf_token }}',
-				},
-				dataType: "json",
-				// handle a successful response
-				// success: function (data) {
-				// 	$('#posts').empty();
-				// 	for (i = 0; i < data.results.length; i++) {
-				// 		$('#posts').append(i)
-        		// 	}
-				success: function (response) {
-					$('#posts').html('')
-					$.each(response.results, function(i, val) {
-						// <img src="{{'+data.img.url+ '}}" alt="{{ photo.title }}">') | <img src="'+data['image_url']+'" />
-						$('#posts').append('<h5>' + val.title + '</h5><p>'+ val.overview +'</p>')
-				   });
-				},
-				error: function(rs, e){
-					console.log(rs.responseText);
-            	},
-			}); 
-		});    
+<script type="text/javascript">
+	function ajaxPagination() {
+		$('#pagination a.page-link').each((index, el) => {
+			$(el).click(function(e) {
+				e.preventDefault()
+				let page_url = $(el).attr('href')
+				console.log(page_url)
+
+				$.ajax({
+					url:page_url,
+					type: 'GET',
+					success: function(data) {
+						$('#posts').empty()
+						$('#posts').append($(data).filter('#posts').html(data))
+
+						$('#pagination').empty()
+						$('#pagination').append($(data).find('#pagination').html(data))
+					}
+				})
+			})
+		})
+	}  
+	$(document).ready(function() {
+		ajaxPagination()
+	})
+
+	$(document).ajaxStop(function() {
+		ajaxPagination()
+	})
 </script>
-
-
-
 {% endblock js %}
 
 

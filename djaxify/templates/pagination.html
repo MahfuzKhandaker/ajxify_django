@@ -1,18 +1,32 @@
-<nav>
-    <ul class="pagination">
+<nav id="pagination">
+    <ul class="pagination justify-content-start mt-3">
         {% if page_obj.has_previous %}
         <li class="page-item">
-            <a href="?page={{ page_obj.previous_page_number }}" class="page-link">Previous</a>
+            <a class="page-link" href="{{ request.path }}?page={{ page_obj.previous_page_number }}">Previous</a>
+        </li>
+        {% else %}
+        <li class="page-item">
+          <a class="page-link" href="{{ request.path }}?page=1">&laquo; first</a>
         </li>
         {% endif %}
-
-        <li class="page-item">
-            <a class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a>
+        {% for i in page_obj.paginator.page_range %}
+        {% if page_obj.number == i %}
+        <li class="page-item active">
+          <a class="page-link" href="{{ request.path }}?page={{ i }}" >{{ i }}</a>
         </li>
-
+        {% else %}
+        <li class="page-item">
+          <a class="page-link" href="{{ request.path }}?page={{ i }}" >{{ i }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
         {% if page_obj.has_next %}
         <li class="page-item">
-            <a href="?page={{ page_obj.next_page_number }}" class="page-link">Next</a>
+            <a class="page-link" href="{{ request.path }}?page={{ page_obj.next_page_number }}" >next</a>
+        </li>
+        {% else %}
+        <li class="page-item">
+          <a class="page-link" href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
         </li>
         {% endif %}
     </ul>

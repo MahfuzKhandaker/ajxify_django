@@ -1,0 +1,14 @@
+<div id="posts">
+{% for object in object_list %}
+<div class="container">
+    <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="{{ object.thumbnail.url }}" alt="Card image cap">
+        <div class="card-body cf">
+          <h5 class="card-title"><a href="{{ object.get_absolute_url }}">{{object.title}}</a></h5>
+          <p class="card-text">{{object.content}}</p>
+          <a href="{{ object.get_absolute_url }}" class="btn btn-primary">READ MORE</a>
+        </div>
+      </div>
+</div>
+{% endfor %}
+</div>
