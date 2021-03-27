@@ -2,6 +2,7 @@
 
 {% block content %}
 
+
 <div class="container">
     <h1>All Posts</h1>
     <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Totam perferendis cupiditate veniam, facere ipsam praesentium. Maxime explicabo, magnam nobis temporibus repudiandae enim! Praesentium maiores, accusantium hic at soluta commodi quae.</p>
@@ -10,20 +11,9 @@
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam modi unde excepturi voluptatem velit a accusantium accusamus, tempore officia nam. In ipsa quam laudantium voluptate quod possimus reiciendis, voluptas officiis.</p>
 </div>
 
-<div id="posts">
-	{% for post in page_obj %}
-	<div class="container">
-		<div class="card" style="width: 18rem;">
-			<img class="card-img-top" src="{{ post.thumbnail.url }}" alt="Card image cap">
-			<div class="card-body cf">
-			  <h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{post.title}}</a></h5>
-			  <p class="card-text">{{post.content}}</p>
-			  <a href="{{ post.get_absolute_url }}" class="btn btn-primary">READ MORE</a>
-			</div>
-		  </div>
-	</div>
-	{% endfor %}
-	</div>
+<div class="container">
+	{% include 'posts.html' %}
+</div>
 
 <!-- loop pagination -->
 <div class="container">
@@ -38,14 +28,14 @@
 
 <script type="text/javascript">
 	function ajaxPagination() {
-		$('#pagination a.page-link').each((index, el) => {
+		$('#pagination ul.pagination a.page-link').each((index, el) => {
 			$(el).click(function(e) {
 				e.preventDefault()
 				let page_url = $(el).attr('href')
 				console.log(page_url)
 
 				$.ajax({
-					url:page_url,
+					url: page_url,
 					type: 'GET',
 					success: function(data) {
 						$('#posts').empty()

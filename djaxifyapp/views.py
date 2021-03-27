@@ -30,51 +30,19 @@ class PostCreateView(AjaxFormMixin, CreateView):
 
 class PostListView(ListView):
     model = Post
+
     template_name = 'post_list.html'
 
+    paginate_by = 3
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['object_list'] = Post.published.all()
-        paginator = Paginator(context['object_list'], 3)
+        paginator = Paginator(context['object_list'], 5)
         page_number = self.request.GET.get('page')
         context['page_obj'] = paginator.get_page(page_number)
-        # try:
-        #     context['object_list'] = paginator.page(page)
-        # except PageNotAnInteger:
-        #     context['object_list'] = paginator.page(1)
-        # except EmptyPage:
-        #     context['object_list'] = paginator.page(paginator.num_pages)
-        
+
         return context
-        
-
-
-# def post_list(request):
-#     post_list = Post.published.all()
-
-#     #number of items on each page
-#     number_of_item = 5
-#     # Paginator
-#     obj_paginator = Paginator(post_list, number_of_item)
-#     #query_set for first page
-#     first_page = obj_paginator.page(1).object_list
-#     #range of page ex range(1, 3)
-#     page_range = obj_paginator.page_range
-
-#     context = {
-#         # 'posts': post_list,
-#         'obj_paginator':obj_paginator,
-#         'first_page':first_page,
-#         'page_range':page_range
-#     }
-#     if request.is_ajax():
-#         page_n = request.POST.get('page_n', None) #getting page number
-#         results = list(obj_paginator.page(page_n).object_list.values())
-#         print(results)
-#         return JsonResponse({'results':results})
-
-#     return render(request, 'post_list.html', context )
 
 
 def post_detail(request, slug):
