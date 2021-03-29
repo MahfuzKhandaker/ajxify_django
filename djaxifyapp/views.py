@@ -28,21 +28,58 @@ class PostCreateView(AjaxFormMixin, CreateView):
     template_name = 'create_post.html'
 
 
-class PostListView(ListView):
-    model = Post
+def post_list(request):
+    context = {}
+    posts = Post.published.all()
+    results_per_page = 3
+    paginator = Paginator(posts, results_per_page)
+    page_number = request.GET.get('page')
+    posts = paginator.get_page(page_number)
 
-    template_name = 'post_list.html'
+    context['posts'] = posts
+    # context['page_obj'] = page_obj
 
-    paginate_by = 3
+    if request.is_ajax():
+        html = render_to_string('posts.html',
+        context={'posts': posts}
+        )
+        data_dict = {
+            'posts_html': html
+        }
+        print(data_dict)
+        return JsonResponse(data=data_dict, safe=False)
+        
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['object_list'] = Post.published.all()
-        paginator = Paginator(context['object_list'], 5)
-        page_number = self.request.GET.get('page')
-        context['page_obj'] = paginator.get_page(page_number)
+    return render(request, 'post_list.html', context=context)
 
-        return context
+
+# class PostListView(ListView):
+#     model = Post
+
+#     template_name = 'post_list.html'
+
+#     paginate_by = 3
+
+#     def get(self, request):
+#         data = dict()
+# 		posts = list(Post.published.all().values())
+# 		data['posts'] = posts
+# 		return JsonResponse(data)
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['object_list'] = Post.published.all()
+#         paginator = Paginator(context['object_list'], 3)
+#         page_number = self.request.GET.get('page')
+#         context['page_obj'] = paginator.get_page(page_number)
+
+#         return context
+
+        # if request.is_ajax():
+        #     html = render_to_string('posts.html', context, request=request)
+        #     posts = dict(context)
+        #     data = {'posts': posts}
+        #     return JsonResponse({ 'form': html, 'data': data})
 
 
 def post_detail(request, slug):

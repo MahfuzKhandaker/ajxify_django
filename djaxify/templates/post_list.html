@@ -11,7 +11,7 @@
     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam modi unde excepturi voluptatem velit a accusantium accusamus, tempore officia nam. In ipsa quam laudantium voluptate quod possimus reiciendis, voluptas officiis.</p>
 </div>
 
-<div class="container">
+<div class="container" id="posts">
 	{% include 'posts.html' %}
 </div>
 
@@ -24,25 +24,20 @@
 {% endblock content %}
 
 {% block js %}
-
-
 <script type="text/javascript">
 	function ajaxPagination() {
-		$('#pagination ul.pagination a.page-link').each((index, el) => {
+		$('#pagination a.page-link').each((index, el) => {
 			$(el).click(function(e) {
 				e.preventDefault()
 				let page_url = $(el).attr('href')
 				console.log(page_url)
-
 				$.ajax({
-					url: page_url,
 					type: 'GET',
-					success: function(data) {
-						$('#posts').empty()
-						$('#posts').append($(data).filter('#posts').html(data))
-
-						$('#pagination').empty()
-						$('#pagination').append($(data).find('#pagination').html(data))
+					url: page_url,
+					dataType: 'json',
+					success: function(response) {
+						$('#posts').html(response['posts_html'])
+              			console.log($('#posts').html(response['posts_html']));
 					}
 				})
 			})

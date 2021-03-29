@@ -1,17 +1,15 @@
-<div id="posts">
-  	<div class="row">
-      {% for post in page_obj.object_list %}
-  		<div class="col-lg-3 col-md-4 col-sm-6">
-  			  <div class="card border-primary mb-3">
-  			  	<img style="height: 200px; width: 100%; display: block;" class="card-img-top" src="{{ post.thumbnail.url }}" alt="Card image cap">
-  			  	<div class="card-body">
-  			  		<h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{post.title}}</a></h5>
-  			  		<p class="card-text">{{post.content|truncatewords:15}}</p>
-  			  		<a href="{{ post.get_absolute_url }}" class="btn btn-primary">READ MORE</a>
-			  	</div>
-	  	  </div>
-		</div>
-    {% endfor %}
+<div class="row">
+  	{% for post in posts %}
+	<div class="col-lg-3 col-md-4 col-sm-6">
+		  <div class="card border-primary mb-3">
+		  	<img style="height: 200px; width: 100%; display: block;" class="card-img-top" src="{{ post.thumbnail.url }}" alt="Card image cap">
+		  	<div class="card-body">
+		  		<h5 class="card-title"><a href="{{ post.get_absolute_url }}">{{post.title}}</a></h5>
+		  		<p class="card-text">{{post.content|truncatewords:15}}</p>
+		  		<a href="{{ post.get_absolute_url }}" class="btn btn-primary">READ MORE</a>
+		  	</div>
+  	  </div>
 	</div>
+	{% endfor %}
 </div>
 	
