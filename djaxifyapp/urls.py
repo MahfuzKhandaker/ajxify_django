@@ -4,7 +4,6 @@ from djaxifyapp.views import PostCreateView, post_list, post_detail,  favourite_
 
 urlpatterns = [
     path('', post_list, name='post-list'),
-    # path('posts_paginate/', posts_paginate, name='posts_paginate'),
     path('likes/', likes, name='likes'),
     path('favourites/', post_favourite_list, name='post_favourite_list'),
     path('<slug:slug>/', post_detail, name='post-detail'),

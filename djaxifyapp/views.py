@@ -10,7 +10,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.core import serializers
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, InvalidPage
 try:
     from django.utils import simplejson as json
 except ImportError:
@@ -29,57 +29,31 @@ class PostCreateView(AjaxFormMixin, CreateView):
 
 
 def post_list(request):
-    context = {}
     posts = Post.published.all()
-    results_per_page = 3
+
+    results_per_page = 5
     paginator = Paginator(posts, results_per_page)
-    page_number = request.GET.get('page')
-    posts = paginator.get_page(page_number)
 
-    context['posts'] = posts
-    # context['page_obj'] = page_obj
-
-    if request.is_ajax():
-        html = render_to_string('posts.html',
-        context={'posts': posts}
-        )
-        data_dict = {
-            'posts_html': html
-        }
-        print(data_dict)
-        return JsonResponse(data=data_dict, safe=False)
+    page = request.GET.get('page', 1)
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer deliver the first page
+        posts = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range deliver last page of results
+        posts = paginator.page(paginator.num_pages)
+  
+    # if request.is_ajax():
+    #     posts_html = render_to_string('posts.html',
+    #                 {'posts': posts}
+    #     )
+    #     data_dict = {
+    #         'posts_html': posts_html
+    #     }
+    #     return JsonResponse(data=data_dict)
         
-
-    return render(request, 'post_list.html', context=context)
-
-
-# class PostListView(ListView):
-#     model = Post
-
-#     template_name = 'post_list.html'
-
-#     paginate_by = 3
-
-#     def get(self, request):
-#         data = dict()
-# 		posts = list(Post.published.all().values())
-# 		data['posts'] = posts
-# 		return JsonResponse(data)
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['object_list'] = Post.published.all()
-#         paginator = Paginator(context['object_list'], 3)
-#         page_number = self.request.GET.get('page')
-#         context['page_obj'] = paginator.get_page(page_number)
-
-#         return context
-
-        # if request.is_ajax():
-        #     html = render_to_string('posts.html', context, request=request)
-        #     posts = dict(context)
-        #     data = {'posts': posts}
-        #     return JsonResponse({ 'form': html, 'data': data})
+    return render(request, 'post_list.html', {'posts':posts})
 
 
 def post_detail(request, slug):

@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
 
 
@@ -7,51 +9,44 @@
     <h1>All Posts</h1>
     <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Totam perferendis cupiditate veniam, facere ipsam praesentium. Maxime explicabo, magnam nobis temporibus repudiandae enim! Praesentium maiores, accusantium hic at soluta commodi quae.</p>
     <br>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa excepturi inventore sed nobis? Enim exercitationem libero magni, perspiciatis deserunt porro illo nisi dolore cum? Itaque earum corrupti architecto at iure.</p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam modi unde excepturi voluptatem velit a accusantium accusamus, tempore officia nam. In ipsa quam laudantium voluptate quod possimus reiciendis, voluptas officiis.</p>
 </div>
 
-<div class="container" id="posts">
+<div id="posts">
 	{% include 'posts.html' %}
 </div>
 
-<!-- loop pagination -->
-<div class="container">
-	{% include 'pagination.html' %}
+{% if posts.has_next %}
+<a class="infinite-more-link" href="?page={{ posts.next_page_number }}"></a>
+{% endif %}
+<div class="d-flex justify-content-center" style="display:none;">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
 </div>
-
-
 {% endblock content %}
 
 {% block js %}
-<script type="text/javascript">
-	function ajaxPagination() {
-		$('#pagination a.page-link').each((index, el) => {
-			$(el).click(function(e) {
-				e.preventDefault()
-				let page_url = $(el).attr('href')
-				console.log(page_url)
-				$.ajax({
-					type: 'GET',
-					url: page_url,
-					dataType: 'json',
-					success: function(response) {
-						$('#posts').html(response['posts_html'])
-              			console.log($('#posts').html(response['posts_html']));
-					}
-				})
-			})
-		})
-	}  
-	$(document).ready(function() {
-		ajaxPagination()
-	})
+<script>
+    $(document).ready(function(){ 
+        var infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+            handler: function(direction) {
+        },
+        offset: 'bottom-in-view',
 
-	$(document).ajaxStop(function() {
-		ajaxPagination()
-	})
+        onBeforePageLoad: function () {
+            $('.spinner-border').show();
+        },
+        onAfterPageLoad: function () {
+            $('.spinner-border').hide();
+        }
+
+    });
+});
 </script>
+
 {% endblock js %}
+
 
 
 
