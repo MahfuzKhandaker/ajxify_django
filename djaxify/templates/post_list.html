@@ -12,38 +12,46 @@
 </div>
 
 <div id="posts">
-	{% include 'posts.html' %}
+    {% include 'posts.html' %}
+</div>
+<div>
+    <a id="lazyLoadLink" href="javascript:void(0);" data-page="2">Load More Posts</a>
 </div>
 
-{% if posts.has_next %}
-<a class="infinite-more-link" href="?page={{ posts.next_page_number }}"></a>
-{% endif %}
-<div class="d-flex justify-content-center" style="display:none;">
-    <div class="spinner-border" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
-</div>
 {% endblock content %}
 
 {% block js %}
 <script>
-    $(document).ready(function(){ 
-        var infinite = new Waypoint.Infinite({
-            element: $('.infinite-container')[0],
-            handler: function(direction) {
-        },
-        offset: 'bottom-in-view',
-
-        onBeforePageLoad: function () {
-            $('.spinner-border').show();
-        },
-        onAfterPageLoad: function () {
-            $('.spinner-border').hide();
-        }
-
-    });
-});
-</script>
+    $(document).ready(function(){
+        $('#lazyLoadLink').on('click', function() {
+        var link = $(this);
+        var page = link.data('page');
+        $.ajax({
+          type: 'post',
+          url: 'load_more_posts/',
+          data: {
+            'page': page,
+            'csrfmiddlewaretoken': '{{csrf_token}}'
+          },
+          success: function(data) {
+            // if there are still more pages to load,
+            // add 1 to the "Load More Posts" link's page data attribute
+            // else hide the link
+            if (data.has_next) {
+                link.data('page', page+1);
+            } else {
+              link.hide();
+            }
+            // append html to the posts div
+            $('#posts').append(data.posts_html);
+          },
+          error: function(xhr, status, error) {
+            // shit happens friends!
+          }
+        });
+      });
+    })
+  </script>
 
 {% endblock js %}
 

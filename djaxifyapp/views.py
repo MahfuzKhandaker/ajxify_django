@@ -29,31 +29,33 @@ class PostCreateView(AjaxFormMixin, CreateView):
 
 
 def post_list(request):
+    posts = Post.published.all()[:3]
+    return render(request, 'post_list.html', {'posts': posts})
+
+def load_more_posts(request):
+    page = request.POST.get('page')
     posts = Post.published.all()
-
-    results_per_page = 5
+    # use Django's pagination
+    # https://docs.djangoproject.com/en/dev/topics/pagination/
+    results_per_page = 3
     paginator = Paginator(posts, results_per_page)
-
-    page = request.GET.get('page', 1)
     try:
         posts = paginator.page(page)
     except PageNotAnInteger:
-        # If page is not an integer deliver the first page
-        posts = paginator.page(1)
+        posts = paginator.page(2)
     except EmptyPage:
-        # If page is out of range deliver last page of results
         posts = paginator.page(paginator.num_pages)
-  
-    # if request.is_ajax():
-    #     posts_html = render_to_string('posts.html',
-    #                 {'posts': posts}
-    #     )
-    #     data_dict = {
-    #         'posts_html': posts_html
-    #     }
-    #     return JsonResponse(data=data_dict)
-        
-    return render(request, 'post_list.html', {'posts':posts})
+    # build a html posts list with the paginated posts
+    posts_html = render_to_string(
+        'posts.html',
+        {'posts': posts}
+    )
+    # package output data and return it as a JSON object
+    output_data = {
+        'posts_html': posts_html,
+        'has_next': posts.has_next()
+    }
+    return JsonResponse(output_data)
 
 
 def post_detail(request, slug):
